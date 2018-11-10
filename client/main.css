@@ -1,0 +1,70 @@
+@import url("https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css");
+
+.Login{
+
+  margin-left: 25%;
+  margin-top: 10%;
+  width: 50%;
+	border-radius: 5px;
+	padding: 3em;
+	background-color: rgba(17, 158, 194, 0.4);
+}
+
+.form-nuevoProy{
+  margin-left: 30%;
+  margin-top: 3%;
+  width: 45%;
+}
+
+.bajar{
+
+  margin-top: 10%;
+
+}
+
+
+.rojo{
+
+  background-color: red;
+  color: white;
+}
+
+
+.alin-left{
+  text-align: left;
+
+}
+.barra-busqueda{
+  text-align: center;
+  margin-left: 30%;
+  margin-top: 3%;
+  width: 40%;
+}
+
+.btn-buscar{
+  width: 20%;
+
+}
+
+.lista{
+  margin-left: 20%;
+  width: 60%;  
+}
+
+.btn-agregar{
+  width: 50%;
+
+}
+
+.der{
+
+  float: right;
+}
+
+.izq{
+
+  float: left;
+}
+.App {
+  text-align: center;
+}
