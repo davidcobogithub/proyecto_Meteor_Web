@@ -43,16 +43,23 @@ class Login extends Component {
       var emailVar = this.state.usuarioConst;
       var passwordVar = this.state.passwordConst;
 
-      Meteor.loginWithPassword(emailVar, passwordVar, function (error) {
-        localStorage.setItem("varia", null)
-        if (error) {
-          this.mensaje(error.reason);
-          return;
-        } else {
-          localStorage.setItem("varia", JSON.stringify(Meteor.user()))
+      if (emailVar !== "" && passwordVar !== "") {
+
+        Meteor.loginWithPassword(emailVar, passwordVar, function (error) {
+          localStorage.setItem("varia", null)
+          if (error) {
+            alert(error.reason);
+            return;
+          } else {
+            localStorage.setItem("varia", null)
+            localStorage.setItem("varia", JSON.stringify(Meteor.user()))
+          }
         }
+        );
+      } else {
+        this.mensaje("Error, debe completar todos los campos")
+        localStorage.setItem("varia", null)
       }
-      );
     }
   }
 
@@ -80,15 +87,24 @@ class Login extends Component {
 
       if (this.state.usuarioConstModal !== "" && this.state.passwordConstModal !== "") {
 
-        var emailVar = this.state.usuarioConstModal;
-        var passwordVar = this.state.passwordConstModal;
+        if (this.state.usuarioConstModal.includes("@")) {
 
-        Accounts.createUser({
-          email: emailVar,
-          password: passwordVar
-        });
-        this.mensaje("Se ha creado nuevo usuario")
-        this.handleClose();
+          var emailVar = this.state.usuarioConstModal;
+          var passwordVar = this.state.passwordConstModal;
+
+          Accounts.createUser({
+            email: emailVar,
+            password: passwordVar
+          });
+          this.mensaje("Se ha creado nuevo usuario")
+          this.handleClose();
+          this.setState({
+            redir: <Redirect to='/login' />
+
+          });
+        } else {
+          this.mensaje("El usuario no tiene el formato de correo, xxx@dominio.com")
+        }
       }
       else {
         this.mensaje("Debes completar los campos para registrar nuevo usuario")
@@ -113,9 +129,33 @@ class Login extends Component {
   render() {
 
     return (
-      <div className="Login">
+      // <div className="Login">
 
-        <h1>BIENVENIDO A MANAGEMENT TOOL</h1>
+
+      <div className="login-page ng-scope ui-view" style={{ backgroundImage: "url(  http://www.ormeco.com.co/wp-content/uploads/2015/06/GERENCIA-DE-PROYECTOS.jpg  )" }}>
+        <div className="row">
+          <div className="col-md-4 col-lg-4 col-md-offset-4 col-lg-offset-4">
+            <img src="https://rawgit.com/start-react/ani-theme/master/build/c4584a3be5e75b1595685a1798c50743.png" className="user-avatar" />
+            <h1 style={{ color: "white", fontWeight: "800" }}>Management Tool</h1>
+            <form role="form" className="ng-pristine ng-valid">
+              <div className="form-content">
+                <div className="form-group">
+                  <input type="text" className="form-control  input-lg" placeholder="Usuario" name="usuarioConst" value={this.state.usuarioConst}
+                    onChange={this.updateInput.bind(this)} />
+                </div>
+                <div className="form-group">
+                  <input type="password" className="form-control  input-lg" placeholder="Contraseña" name="passwordConst" value={this.state.passwordConst}
+                    onChange={this.updateInput.bind(this)} />
+                </div>
+              </div>
+              <button className="btn btn-white btn-outline btn-lg btn-rounded" onClick={this.ingresoLogin.bind(this)}>Ingresar</button>
+
+            </form>
+            <br />
+            <button className="btn btn-white btn-outline btn-lg btn-rounded" onClick={this.handleShow}>Registrar</button>
+          </div>
+        </div>
+        {/* <h1>BIENVENIDO A MANAGEMENT TOOL</h1>
         <br />
         <br />
         <br />
@@ -134,8 +174,8 @@ class Login extends Component {
           <button className="btn btn-primary btn-lg" onClick={this.ingresoLogin.bind(this)}>Ingresar</button>
         </form>
         <br />
-        <button className="btn btn-primary btn-lg" onClick={this.handleShow}>Registrar</button>
-      
+        <button className="btn btn-primary btn-lg" onClick={this.handleShow}>Registrar</button> */}
+
         <Modal show={this.state.show} onHide={this.handleClose}>
           <div >
             <Modal.Header >

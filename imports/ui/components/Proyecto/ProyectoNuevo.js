@@ -133,24 +133,27 @@ class ProyectoNuevo extends Component {
       });
 
       return (
-        <div className="ProyectoNuevo container">
-          <nav className="navbar navbar-expand-lg navbar-light bg-light">
-            <a className="navbar-brand" href="/proyectos"><i className="fas fa-wrench fa-2x"></i><i className="fas fa-toolbox fa-2x"></i> HOME Management Tool</a>
+        <div className="login-page ng-scope ui-view" style={{ backgroundColor: "#F2F2F2" }}>
+          <div className=" container " >
 
-            <ul className="navbar-nav ml-auto my-lg-0">
+            <nav className="navbar navbar-expand-lg navbar-dark bg-dark  navbar-fixed-top ">
+              <a className="nav-link" href="/proyectos"><img src="https://rawgit.com/start-react/ani-theme/master/build/c4584a3be5e75b1595685a1798c50743.png" className="user-avatar1" />  Management Tool</a>
 
-              <li className="nav-item">
-                {usuarioId}
-              </li>
 
-              <li className="nav-item">
-                <a className="nav-link" href="/login"><i className="fas fa-power-off"></i> Cerrar Sesión</a>
-              </li>
+              <ul className="navbar-nav ml-auto my-lg-0">
 
-            </ul>
+                <li className="nav-link1"> {usuarioId}&nbsp;&nbsp;
+    <a className="nav-link" href="/login"><i className="fas fa-power-off"></i>LogOut</a>
+                </li>
+              </ul>
 
-          </nav>
+            </nav>
+          </div>
           <form className="form-nuevoProy" onSubmit={this.onGuardar.bind(this)}>
+
+            <div>
+              <h1>AGREGAR NUEVO PROYECTO</h1>
+            </div>
 
             <div className="form-group ">
               <input type="text" className="form-control" placeholder="Nombre" name="nombreProyConst" value={this.state.nombreProyConst}

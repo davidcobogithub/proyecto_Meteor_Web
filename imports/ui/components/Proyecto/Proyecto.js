@@ -3,18 +3,32 @@ import { Redirect } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 import { ProyectosCollection } from '../../../api/proyectos.js';
 import { Meteor } from 'meteor/meteor';
+import { Modal } from 'react-bootstrap'
 
 class Proyecto extends Component {
 
   constructor() {
     super();
+
+    this.handleShow = this.handleShow.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+
     this.state = {
 
       resul: [],
       nombreProyConst: "",
       redir:null,
-      msg:null
+      msg:null,
+      show: false,
     }
+  }
+
+  handleClose() {
+    this.setState({ show: false });
+  }
+
+  handleShow() {
+    this.setState({ show: true });
   }
 
   updateInput(e) {
@@ -76,7 +90,7 @@ class Proyecto extends Component {
       if (element.estado !== "TERMINADO" &&
         element.fecha_fin < dateFormat) {
 
-        arreglo.push(<li className="list-group-item barra-busqueda rojo">
+        arreglo.push(<li className="list-group-item rojo">
           {"Nombre: " + element.nombre}
           <br />
           {"Fecha de Inicio: " + element.fecha_inicio}
@@ -93,7 +107,7 @@ class Proyecto extends Component {
 
         arreglo.push(
 
-          <li className="list-group-item barra-busqueda">
+          <li className="list-group-item">
             {"Nombre: " + element.nombre}
             <br />
             {"Fecha de Inicio: " + element.fecha_inicio}
@@ -132,8 +146,7 @@ class Proyecto extends Component {
     localStorage.setItem("proyectoNuevaTarea", JSON.stringify(elem))
 
     this.setState({
-      redir: <Redirect to='/proyectoDetalles'/>
-   
+      show: true
     });
 
   }
@@ -145,42 +158,141 @@ class Proyecto extends Component {
 
   render() {
 
+    var nombre = localStorage.getItem("nomProyecto")
+    var descrip = localStorage.getItem("descProyecto")
+    var respon = localStorage.getItem("responProyecto")
+    var responCorreo = localStorage.getItem("correoResponProyecto")
+    var fechaIni = localStorage.getItem("fechaIniProyecto")
+    var fechaFin = localStorage.getItem("fechaFinProyecto")
+    var esta = localStorage.getItem("estadoProyecto")
+    var tar = JSON.parse(localStorage.getItem("tareasProyecto"))
+
     if (localStorage.getItem("varSesion") !== "") {
 
       var usuarioId= localStorage.getItem("varSesionUsuarioName");
 
 
     return (
-      <div className="Proyecto container">
+      <div className="login-page ng-scope ui-view"  style={{backgroundColor: "#F2F2F2"}}>
 
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
-          <a className="navbar-brand" href="/proyectos"><i className="fas fa-wrench fa-2x"></i><i className="fas fa-toolbox fa-2x"></i> HOME Management Tool</a>
+      <div className=" container " >
 
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark  navbar-fixed-top ">
+          <a className="nav-link" href="/proyectos"><img src="https://rawgit.com/start-react/ani-theme/master/build/c4584a3be5e75b1595685a1798c50743.png" className="user-avatar1" />  Management Tool</a>
+      
+        
           <ul className="navbar-nav ml-auto my-lg-0">
 
-            <li className="nav-item">
-            {usuarioId}
+            <li className="nav-link1"> {usuarioId}&nbsp;&nbsp;
+              <a className="nav-link" href="/login"><i className="fas fa-power-off"></i>LogOut</a>
             </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/login"><i className="fas fa-power-off"></i> Cerrar Sesión</a>
-            </li>
-
           </ul>
 
         </nav>
+      </div>
 
-        <div className="form-group">
-          <input type="text" className="form-control barra-busqueda" placeholder="Buscar Proyectos Por Nombre" name="nombreProyConst" value={this.state.nombreProyConst} 
-            onChange={this.updateInput.bind(this)} />
-          <br />
-          {this.state.msg}
-        </div>
-        {this.state.resul.map(item => <div style={{display: 'inline-block'}} key={Math.random()}>{item}</div>)}
-        <div className="form-group bajar">
+      <div className="form-group">
+        <input type="text" className="form-control barra-busqueda" placeholder="Buscar Proyectos Por Nombre" name="nombreProyConst" value={this.state.nombreProyConst}
+          onChange={this.updateInput.bind(this)} />
+        
+        {this.state.msg}
+      </div>
+      {this.state.resul.map(item =>
+        <div className="cuadros my-3 mr-3" style={{ display: 'inline-block' }} key={Math.random()}>{item}
+        </div>)}
+      <div className="form-group bajar">
 
-          <a className="btn btn-primary btn-buscar" href="/proyectoNuevo">Agregar Nuevo Proyecto</a>
+        <a className="btn btn-primary btn-buscar" href="/proyectoNuevo">Agregar Nuevo Proyecto</a>
+      </div>
+
+      <Modal show={this.state.show} onHide={this.handleClose}>
+        <div >
+          <Modal.Header >
+            {/* <Modal.Title>REGISTRO A MANAGEMENT TOOL</Modal.Title> */}
+            <button type="button" className="close" onClick={this.handleClose} data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </Modal.Header>
         </div>
-        {this.state.redir}
+        <Modal.Body>
+          
+            <div className="row alin-left">
+              <div className="col-lg-4">
+                Nombre:
+      </div>
+              <div className="col-lg-8">
+                {nombre}
+              </div>
+            </div>
+            <div className="row alin-left">
+              <div className="col-lg-4">
+                Descripción:
+      </div>
+              <div className="col-lg-8">
+                {descrip}
+              </div>
+            </div>
+            <div className="row alin-left">
+              <div className="col-lg-4">
+                Responsable:
+      </div>
+              <div className="col-lg-8">
+                {respon}
+              </div>
+            </div>
+            <div className="row alin-left">
+              <div className="col-lg-4">
+                Correo:
+      </div>
+              <div className="col-lg-8">
+                {responCorreo}
+              </div>
+            </div>
+            <div className="row alin-left">
+              <div className="col-lg-4">
+                Fecha de Inicio:
+      </div>
+              <div className="col-lg-8">
+                {fechaIni}
+              </div>
+            </div>
+            <div className="row alin-left">
+              <div className="col-lg-4">
+                Fecha de Entrega:
+      </div>
+              <div className="col-lg-8">
+                {fechaFin}
+              </div>
+            </div>
+            <div className="row alin-left">
+              <div className="col-lg-4">
+                Estado:
+      </div>
+              <div className="col-lg-8">
+                {esta}
+              </div>
+            </div>
+            <br />
+            <div className="row alin-left">
+              <div className="col-lg-4">
+                Tareas:
+      </div>
+            </div>
+            <div className="row alin-left">
+              <div className="col-lg-12">
+                <ul>
+                  {tar.map(task => <li key={task.nombre}>Nombre: {task.nombre}<br />Descripción: {task.descripcion}<br />Prioridad: {task.prioridad} <br /> Fecha de Creación: {task.fecha_creacion} <br /><br /></li>)}
+                </ul>
+              </div>
+            </div>
+            <br />
+            <br />
+            <a className="btn btn-primary btn-agregar" href="/tareas">Agregar Nueva Tarea</a>
+          
+        </Modal.Body>
+
+      </Modal>
+      {this.state.redir}
 
       </div>
     );
@@ -203,5 +315,3 @@ export default withTracker(() => {
     proyectosProps: ProyectosCollection.find({}).fetch(),
   };
 })(Proyecto);
-
-

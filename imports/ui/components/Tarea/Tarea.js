@@ -30,6 +30,7 @@ class Tarea extends Component {
   onGuardar(e) {
 
     var proyTar = JSON.parse(localStorage.getItem("proyectoNuevaTarea"));
+    var usuarioId = localStorage.getItem("varSesionUsuarioName")
 
     if (this.state.nombreTarConst !== "" && this.state.descripcionTarConst !== ""
       && this.state.prioridadTarCons !== "SELECCIONE PRIORIDAD") {
@@ -47,10 +48,10 @@ class Tarea extends Component {
 
       var tarProyects = [];
       var proyects = this.getProyectos(this);
-
+      var usuarioId= localStorage.getItem("varSesionUsuarioName");
       proyects.forEach(doc => {
 
-        if (doc.nombre === proyTar.nombre) {
+        if (doc.nombre === proyTar.nombre && proyTar.responsable_correo === usuarioId) {
 
           tarProyects = doc.tareas;
           tarProyects.push(tareaNueva);
@@ -60,6 +61,7 @@ class Tarea extends Component {
             nombre: proyTar.nombre,
             descripcion: proyTar.descripcion,
             responsable: proyTar.responsable,
+            responsable_correo: usuarioId,
             fecha_inicio: proyTar.fecha_inicio,
             fecha_fin: proyTar.fecha_fin,
             estado: proyTar.estado,
@@ -103,26 +105,31 @@ class Tarea extends Component {
 
     if (localStorage.getItem("varSesion") !== "") {
 
+      var proyTar = JSON.parse(localStorage.getItem("proyectoNuevaTarea"));
       var usuarioId = localStorage.getItem("varSesionUsuarioName")
 
       return (
-        <div className="Tarea container">
-          <nav className="navbar navbar-expand-lg navbar-light bg-light">
-            <a className="navbar-brand" href="/proyectos"><i className="fas fa-wrench fa-2x"></i><i className="fas fa-toolbox fa-2x"></i> HOME Management Tool</a>
+        <div className="login-page ng-scope ui-view" style={{ backgroundColor: "#F2F2F2" }}>
+          <div className=" container " >
 
-            <ul className="navbar-nav ml-auto my-lg-0">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark  navbar-fixed-top ">
+              <a className="nav-link" href="/proyectos"><img src="https://rawgit.com/start-react/ani-theme/master/build/c4584a3be5e75b1595685a1798c50743.png" className="user-avatar1" />  Management Tool</a>
 
-              <li className="nav-item">
-                {usuarioId}
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="/login"><i className="fas fa-power-off"></i> Cerrar Sesión</a>
-              </li>
 
-            </ul>
+              <ul className="navbar-nav ml-auto my-lg-0">
 
-          </nav>
+                <li className="nav-link1"> {usuarioId}&nbsp;&nbsp;
+      <a className="nav-link" href="/login"><i className="fas fa-power-off"></i>LogOut</a>
+                </li>
+              </ul>
+
+            </nav>
+          </div>
           <form className="form-nuevoProy" onSubmit={this.onGuardar.bind(this)}>
+
+            <div>
+              <h1>Agregar Tareas Para: {proyTar.nombre} </h1>
+            </div>
 
             <div className="form-group">
               <input type="text" className="form-control" placeholder="Nombre" name="nombreTarConst" value={this.state.nombreTarConst}
