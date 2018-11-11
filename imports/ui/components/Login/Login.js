@@ -72,8 +72,8 @@ class Login extends Component {
     if (res != null) {
       localStorage.setItem("varSesion", res._id)
       this.setState({
-        // redir: <Redirect to='/proyectos' />
-        redir: <Redirect to='https://tallermeteorproy.herokuapp.com/proyectos' />
+        redir: <Redirect to='/proyectos' />
+        // redir: <Redirect to='https://tallermeteorproy.herokuapp.com/proyectos' />
 
       });
 
