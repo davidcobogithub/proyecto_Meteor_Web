@@ -72,8 +72,8 @@ class Login extends Component {
     if (res != null) {
       localStorage.setItem("varSesion", res._id)
       this.setState({
-        redir: <Redirect to='/proyectos' />
-        // redir: <Redirect to='https://tallermeteorproy.herokuapp.com/proyectos' />
+        // redir: <Redirect to='/proyectos' />
+        redir: <Redirect to={process.env.PUBLIC_URL +'/proyectos'} />
 
       });
 
@@ -130,10 +130,8 @@ class Login extends Component {
   render() {
 
     return (
-      // <div className="Login">
-
-
-      <div className="login-page ng-scope ui-view" style={{ backgroundImage: "url(  http://www.ormeco.com.co/wp-content/uploads/2015/06/GERENCIA-DE-PROYECTOS.jpg  )" }}>
+    
+    <div className="login-page ng-scope ui-view" style={{ backgroundImage: "url(  http://www.ormeco.com.co/wp-content/uploads/2015/06/GERENCIA-DE-PROYECTOS.jpg  )" }}>
         <div className="row">
           <div className="col-md-4 col-lg-4 col-md-offset-4 col-lg-offset-4">
             <img src="https://rawgit.com/start-react/ani-theme/master/build/c4584a3be5e75b1595685a1798c50743.png" className="user-avatar" />
@@ -156,27 +154,7 @@ class Login extends Component {
             <button className="btn btn-white btn-outline btn-lg btn-rounded" onClick={this.handleShow}>Registrar</button>
           </div>
         </div>
-        {/* <h1>BIENVENIDO A MANAGEMENT TOOL</h1>
-        <br />
-        <br />
-        <br />
-        <form>
-          <div className="form-group">
-
-            <input type="text" className="form-control" placeholder="Usuario" name="usuarioConst" value={this.state.usuarioConst}
-              onChange={this.updateInput.bind(this)} />
-          </div>
-
-          <div className="form-group">
-
-            <input type="password" className="form-control" placeholder="Contraseña" name="passwordConst" value={this.state.passwordConst}
-              onChange={this.updateInput.bind(this)} />
-          </div>
-          <button className="btn btn-primary btn-lg" onClick={this.ingresoLogin.bind(this)}>Ingresar</button>
-        </form>
-        <br />
-        <button className="btn btn-primary btn-lg" onClick={this.handleShow}>Registrar</button> */}
-
+      
         <Modal show={this.state.show} onHide={this.handleClose}>
           <div >
             <Modal.Header >
