@@ -73,7 +73,7 @@ class Login extends Component {
       localStorage.setItem("varSesion", res._id)
       this.setState({
         // redir: <Redirect to='/proyectos' />
-        redir: <Redirect to={process.env.PUBLIC_URL + '/proyectos'} />
+        redir: <Redirect to='/proyectos' />
 
       });
 
