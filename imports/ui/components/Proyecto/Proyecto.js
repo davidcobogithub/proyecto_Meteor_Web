@@ -165,7 +165,12 @@ class Proyecto extends Component {
     var fechaIni = localStorage.getItem("fechaIniProyecto")
     var fechaFin = localStorage.getItem("fechaFinProyecto")
     var esta = localStorage.getItem("estadoProyecto")
-    // var tar = JSON.parse(localStorage.getItem("tareasProyecto"))
+    var tar = JSON.parse(localStorage.getItem("tareasProyecto"))
+    var tareasResul=[]
+
+    if (tar) {
+      tareasResul=tar
+    }
 
     if (localStorage.getItem("varSesion") !== "") {
 
@@ -208,7 +213,7 @@ class Proyecto extends Component {
           <Modal show={this.state.show} onHide={this.handleClose}>
             <div >
               <Modal.Header >
-                {/* <Modal.Title>REGISTRO A MANAGEMENT TOOL</Modal.Title> */}
+              
                 <button type="button" className="close" onClick={this.handleClose} data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -273,7 +278,7 @@ class Proyecto extends Component {
                 </div>
               </div>
               <br />
-              {/* <div className="row alin-left">
+              <div className="row alin-left">
                 <div className="col-lg-4">
                   Tareas:
       </div>
@@ -281,10 +286,10 @@ class Proyecto extends Component {
               <div className="row alin-left">
                 <div className="col-lg-12">
                   <ul>
-                    {tar.map(task => <li key={task.nombre}>Nombre: {task.nombre}<br />Descripción: {task.descripcion}<br />Prioridad: {task.prioridad} <br /> Fecha de Creación: {task.fecha_creacion} <br /><br /></li>)}
+                    {tareasResul.map(task => <li key={task.nombre}>Nombre: {task.nombre}<br />Descripción: {task.descripcion}<br />Prioridad: {task.prioridad} <br /> Fecha de Creación: {task.fecha_creacion} <br /><br /></li>)}
                   </ul>
                 </div>
-              </div> */}
+              </div>
               <br />
               <br />
               <a className="btn btn-primary btn-agregar" href="/tareas">Agregar Nueva Tarea</a>
