@@ -14,8 +14,8 @@ const AppRoutes = () =>
       <Route exact path="/proyectoNuevo" component={ProyectoNuevo}/>
       <Route exact path="/tareas" component={Tarea}/> */}
 
-       <Redirect from={process.env.PUBLIC_URL + '/login'} to="/"/>
-      <Route exact path={process.env.PUBLIC_URL + '/'}  component={Login}/>
+       <Redirect from="/login" to="/"/>
+      <Route exact path="/"  component={Login}/>
       <Route exact path={process.env.PUBLIC_URL + '/proyectos'}  component={Proyecto}/>
       <Route exact path={process.env.PUBLIC_URL + '/proyectoNuevo'} component={ProyectoNuevo}/>
       <Route exact path={process.env.PUBLIC_URL + '/tareas'} component={Tarea}/>
