@@ -167,7 +167,7 @@ class Proyecto extends Component {
     var esta = localStorage.getItem("estadoProyecto")
     // var tar = JSON.parse(localStorage.getItem("tareasProyecto"))
 
-    if (localStorage.getItem("varSesion") !== "" && tar) {
+    if (localStorage.getItem("varSesion") !== "") {
 
       var usuarioId = localStorage.getItem("varSesionUsuarioName");
 
