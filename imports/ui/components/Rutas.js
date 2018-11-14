@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {Route, Switch, Redirect} from 'react-router-dom';
-import Proyecto from './Proyecto/Proyecto.jsx';
-import ProyectoNuevo from './Proyecto/ProyectoNuevo.jsx';
-import Tarea from './Tarea/Tarea.jsx'
-import Login from './Login/Login.jsx'
+import Proyecto from './Proyecto/Proyecto.js';
+import ProyectoNuevo from './Proyecto/ProyectoNuevo.js';
+import Tarea from './Tarea/Tarea.js'
+import Login from './Login/Login.js'
 
 const AppRoutes = () =>
     <Switch>
