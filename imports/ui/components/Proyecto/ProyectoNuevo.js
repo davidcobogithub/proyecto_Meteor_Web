@@ -287,7 +287,7 @@ class ProyectoNuevo extends Component {
           <form className="form-nuevoProy" onSubmit={this.onGuardar.bind(this)}>
 
             <div>
-              <h1>AGREGAR NUEVO PROYECTO</h1>
+              <h1>ADMINISTRACION DE PROYECTOS</h1>
             </div>
 
             <div className="form-group ">

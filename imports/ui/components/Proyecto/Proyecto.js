@@ -384,7 +384,7 @@ class Proyecto extends Component {
               <br />
          
               <a className="btn btn-primary btn-agregar" href="/tareaNueva">Agregar Nueva Tarea</a>&nbsp;&nbsp;
-              <a className="btn btn-primary btn-agregar" href="/proyectoNuevo">Modificar Proyecto</a>
+              <a className="btn btn-primary btn-agregar ml-5" href="/proyectoNuevo">Modificar Proyecto</a>
               <div className="row my-5">
                 <div className="col-lg-12 btn-agregarPersProy">
                   <button className="btn btn-primary btn-agregar" onClick={this.handleClickGoNuevaPersonaProy.bind(this)}>Agregar Personal</button>
