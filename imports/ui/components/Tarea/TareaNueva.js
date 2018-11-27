@@ -3,17 +3,41 @@ import { Redirect } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 import { ProyectosCollection } from '../../../api/proyectos.js';
 import { Meteor } from 'meteor/meteor';
+import { Alert } from 'react-bootstrap'
 
-class Tarea extends Component {
+class TareaNueva extends Component {
 
   constructor() {
     super();
+
+    this.handleDismiss = this.handleDismiss.bind(this);
+    this.handleShowAlert = this.handleShowAlert.bind(this);
+
     this.state = {
 
       nombreTarConst: "",
       descripcionTarConst: "",
-      prioridadTarCons: ""
+      prioridadTarCons: "",
+      showAlert: false,
+      tipoAlerta: "info",
+      mensajeAlerta: ""
     }
+  }
+
+
+  handleDismiss() {
+    this.setState({ showAlert: false });
+  }
+
+  handleShowAlert() {
+    this.setState({ showAlert: true });
+
+
+    setTimeout(function () {
+      this.setState({ showAlert: false });
+    }.bind(this), 8000);
+
+
   }
 
   getProyectos(e) {
@@ -28,6 +52,8 @@ class Tarea extends Component {
   }
 
   onGuardar(e) {
+
+    e.preventDefault();
 
     var proyTar = JSON.parse(localStorage.getItem("proyectoNuevaTarea"));
     var usuarioId = localStorage.getItem("varSesionUsuarioName")
@@ -48,13 +74,18 @@ class Tarea extends Component {
 
       var tarProyects = [];
       var proyects = this.getProyectos(this);
-      var usuarioId= localStorage.getItem("varSesionUsuarioName");
+      var usuarioId = localStorage.getItem("varSesionUsuarioName");
+
+      var personasProyects = [];
+      
       proyects.forEach(doc => {
 
         if (doc.nombre === proyTar.nombre && proyTar.responsable_correo === usuarioId) {
 
           tarProyects = doc.tareas;
           tarProyects.push(tareaNueva);
+          
+          personasProyects = doc.personas;
 
           var proyectoModificar = {
 
@@ -65,10 +96,18 @@ class Tarea extends Component {
             fecha_inicio: proyTar.fecha_inicio,
             fecha_fin: proyTar.fecha_fin,
             estado: proyTar.estado,
-            tareas: tarProyects
+            tareas: tarProyects,
+            personas:personasProyects
           }
 
+          
+
           Meteor.call('proyectos.update', proyTar._id, proyectoModificar);
+          this.setState({
+            tipoAlerta: "success",
+            mensajeAlerta: "Se agregó nueva tarea correctamente"
+          });
+          this.handleShowAlert();
 
         }
       });
@@ -80,18 +119,18 @@ class Tarea extends Component {
         prioridadTarCons: ""
       });
     } else {
-      this.mensaje("Para agregar una nueva tarea debe llenar todos los campos del formulario")
+
+      this.setState({
+        tipoAlerta: "warning",
+        mensajeAlerta: "Para agregar una nueva tarea debe llenar todos los campos del formulario"
+      });
+      this.handleShowAlert();
     }
   }
 
   convertDateFormat(string) {
     var info = string.split('/');
     return info[2] + '-' + info[1] + '-' + info[0];
-  }
-
-  mensaje(msm) {
-
-    alert(msm);
   }
 
   updateInput(e) {
@@ -108,13 +147,28 @@ class Tarea extends Component {
       var proyTar = JSON.parse(localStorage.getItem("proyectoNuevaTarea"));
       var usuarioId = localStorage.getItem("varSesionUsuarioName")
 
+
+      var alerta = null;
+      if (this.state.showAlert) {
+
+        alerta =
+          <Alert className="alertas" bsStyle={this.state.tipoAlerta} onDismiss={this.handleDismiss}>
+            <p>
+              {this.state.mensajeAlerta}
+            </p>
+
+          </Alert>
+
+      }
+
       return (
         <div className="login-page ng-scope ui-view" style={{ backgroundColor: "#F2F2F2" }}>
           <div className=" container " >
 
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark  navbar-fixed-top ">
+            <nav className="navbar navbar-expand-lg navbar-dark bg-dark  navbar-fixed-top ">
               <a className="nav-link" href="/proyectos"><img src="https://rawgit.com/start-react/ani-theme/master/build/c4584a3be5e75b1595685a1798c50743.png" className="user-avatar1" />  Management Tool</a>
-
+              
+              <a className="nav-link" href="/personas">Personal</a>
 
               <ul className="navbar-nav ml-auto my-lg-0">
 
@@ -125,6 +179,13 @@ class Tarea extends Component {
 
             </nav>
           </div>
+
+          <div className="row" style={{ float: "right", marginTop: "70px" }}>
+
+            {alerta}
+
+          </div>
+
           <form className="form-nuevoProy" onSubmit={this.onGuardar.bind(this)}>
 
             <div>
@@ -170,4 +231,4 @@ export default withTracker(() => {
   return {
     proyectosProps: ProyectosCollection.find({}).fetch(),
   };
-})(Tarea);
+})(TareaNueva);

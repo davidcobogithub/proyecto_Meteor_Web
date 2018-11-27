@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { Redirect } from 'react-router-dom';
-import { Modal } from 'react-bootstrap'
+import { Modal, Alert } from 'react-bootstrap'
 
 class Login extends Component {
 
@@ -11,6 +11,8 @@ class Login extends Component {
     this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
 
+    this.handleDismiss = this.handleDismiss.bind(this);
+    this.handleShowAlert = this.handleShowAlert.bind(this);
 
     localStorage.setItem("varSesion", "")
 
@@ -24,16 +26,40 @@ class Login extends Component {
       redir: null,
       registro: null,
       show: false,
+      showAlert: false,
+      tipoAlerta:"info",
+      mensajeAlerta:""
     }
 
   }
 
   handleClose() {
-    this.setState({ show: false });
+    this.setState({
+       show: false,
+       usuarioConstModal: "",
+      passwordConstModal: ""
+     });
+    
+    
   }
 
   handleShow() {
     this.setState({ show: true });
+  }
+
+  handleDismiss() {
+    this.setState({ showAlert: false });
+  }
+
+  handleShowAlert() {
+    this.setState({ showAlert: true });
+
+
+    setTimeout(function(){
+      this.setState({ showAlert: false });
+    }.bind(this), 8000);
+
+
   }
 
   handleIngresarSistema(e) {
@@ -48,16 +74,27 @@ class Login extends Component {
         Meteor.loginWithPassword(emailVar, passwordVar, function (error) {
           localStorage.setItem("varia", null)
           if (error) {
-            alert(error.reason);
+            this.setState({
+              tipoAlerta:"danger",
+              mensajeAlerta:error.reason
+            });
+            this.handleShowAlert();
             return;
           } else {
             localStorage.setItem("varia", null)
             localStorage.setItem("varia", JSON.stringify(Meteor.user()))
           }
-        }
+        }.bind(this)
         );
       } else {
-        this.mensaje("Error, debe completar todos los campos")
+
+        this.setState({
+         
+          tipoAlerta:"danger",
+          mensajeAlerta:"Error, debe completar todos los campos"
+        });
+        this.handleShowAlert();
+
         localStorage.setItem("varia", null)
       }
     }
@@ -97,18 +134,35 @@ class Login extends Component {
             email: emailVar,
             password: passwordVar
           });
-          this.mensaje("Se ha creado nuevo usuario")
+
+          this.setState({
+         
+            tipoAlerta:"success",
+            mensajeAlerta:"Se ha creado nuevo usuario"
+          });
+          this.handleShowAlert();
           this.handleClose();
           this.setState({
             redir: <Redirect to='/login' />
 
           });
         } else {
-          this.mensaje("El usuario no tiene el formato de correo, xxx@dominio.com")
+
+          this.setState({
+         
+            tipoAlerta:"warning",
+            mensajeAlerta:"El usuario no tiene el formato de correo, xxx@dominio.com"
+          });
+          this.handleShowAlert();
         }
       }
       else {
-        this.mensaje("Debes completar los campos para registrar nuevo usuario")
+        this.setState({
+         
+          tipoAlerta:"danger",
+          mensajeAlerta:"Debes completar los campos para registrar nuevo usuario"
+        });
+        this.handleShowAlert();
       }
     }
   }
@@ -122,19 +176,38 @@ class Login extends Component {
 
   }
 
-  mensaje(msm) {
-
-    alert(msm);
-  }
-
   render() {
+
+    var alerta=null;
+
+    if (this.state.showAlert) {
+       
+           alerta=
+           <Alert className="alertas" bsStyle={this.state.tipoAlerta} onDismiss={this.handleDismiss}>
+             <p>
+              {this.state.mensajeAlerta}
+             </p>
+      
+           </Alert>
+         
+       }
+
 
     return (
     
     <div className="login-page ng-scope ui-view" style={{ backgroundImage: "url(  http://www.ormeco.com.co/wp-content/uploads/2015/06/GERENCIA-DE-PROYECTOS.jpg  )" }}>
+    
+        <div className="row">
+        <div className="col-md-4 col-lg-4 col-md-offset-4 col-lg-offset-4">
+        <img src="https://rawgit.com/start-react/ani-theme/master/build/c4584a3be5e75b1595685a1798c50743.png" className="user-avatar" />
+        </div>
+        <div className="col-md-4 col-lg-4" style={{ float:"right"}}>
+       {alerta}
+        </div>
+        </div>
         <div className="row">
           <div className="col-md-4 col-lg-4 col-md-offset-4 col-lg-offset-4">
-            <img src="https://rawgit.com/start-react/ani-theme/master/build/c4584a3be5e75b1595685a1798c50743.png" className="user-avatar" />
+          
             <h1 style={{ color: "white", fontWeight: "800" }}>Management Tool</h1>
             <form role="form" className="ng-pristine ng-valid">
               <div className="form-content">
@@ -155,7 +228,7 @@ class Login extends Component {
           </div>
         </div>
       
-        <Modal show={this.state.show} onHide={this.handleClose}>
+        <Modal show={this.state.show} onHide={this.handleClose} >
           <div >
             <Modal.Header >
               <Modal.Title>REGISTRO A MANAGEMENT TOOL</Modal.Title>

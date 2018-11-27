@@ -9,6 +9,7 @@ class Proyecto extends Component {
 
   constructor() {
     super();
+    localStorage.setItem("personasProyecto", null)
 
     this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -21,6 +22,12 @@ class Proyecto extends Component {
       msg: null,
       show: false,
     }
+
+  }
+
+  componentWillReceiveProps() {
+
+    this.mostrarProyectosDefault();
   }
 
   handleClose() {
@@ -29,6 +36,23 @@ class Proyecto extends Component {
 
   handleShow() {
     this.setState({ show: true });
+  }
+
+  mostrarProyectosDefault() {
+
+    var item = [];
+
+    var usuarioId = localStorage.getItem("varSesionUsuarioName");
+
+    this.props.proyectosProps.forEach(element => {
+
+      if (element.responsable_correo === usuarioId) {
+        item.push(element);
+      }
+    });
+
+    this.verificarProyectoEnRojo(item)
+
   }
 
   updateInput(e) {
@@ -69,6 +93,8 @@ class Proyecto extends Component {
         resul: [],
         msg: null
       });
+
+      this.mostrarProyectosDefault();
     }
 
   }
@@ -131,10 +157,46 @@ class Proyecto extends Component {
 
   }
 
+  handleClickGoProyectoNuevo(e) {
+
+    localStorage.setItem("idProyecto", "")
+    localStorage.setItem("nomProyecto", "")
+    localStorage.setItem("descProyecto", "")
+    localStorage.setItem("responProyecto", "")
+    localStorage.setItem("correoResponProyecto", "")
+    localStorage.setItem("fechaIniProyecto", "")
+    localStorage.setItem("fechaFinProyecto", "")
+    localStorage.setItem("estadoProyecto", "SELECCIONE ESTADO")
+
+    this.setState({
+
+      redir: <Redirect to='/proyectoNuevo' />
+
+    });
+
+  }
+
+
+  handleClickGoNuevaPersonaProy(e) {
+
+    localStorage.setItem("nomPersona", "")
+    localStorage.setItem("fechaPersona", "")
+    localStorage.setItem("correoPersona", "")
+    localStorage.setItem("cargoPersona", "")
+
+    this.setState({
+
+      redir: <Redirect to='/personaProyecto' />
+
+    });
+
+  }
+
   handleClickVerDetalles(e) {
 
     var elem = JSON.parse(e.target.value)
 
+    localStorage.setItem("idProyecto", elem._id)
     localStorage.setItem("nomProyecto", elem.nombre)
     localStorage.setItem("descProyecto", elem.descripcion)
     localStorage.setItem("responProyecto", elem.responsable)
@@ -143,6 +205,7 @@ class Proyecto extends Component {
     localStorage.setItem("fechaFinProyecto", elem.fecha_fin)
     localStorage.setItem("estadoProyecto", elem.estado)
     localStorage.setItem("tareasProyecto", JSON.stringify(elem.tareas))
+    localStorage.setItem("personasProyecto", JSON.stringify(elem.personas))
     localStorage.setItem("proyectoNuevaTarea", JSON.stringify(elem))
 
     this.setState({
@@ -158,6 +221,8 @@ class Proyecto extends Component {
 
   render() {
 
+    try {
+    
     var nombre = localStorage.getItem("nomProyecto")
     var descrip = localStorage.getItem("descProyecto")
     var respon = localStorage.getItem("responProyecto")
@@ -166,10 +231,19 @@ class Proyecto extends Component {
     var fechaFin = localStorage.getItem("fechaFinProyecto")
     var esta = localStorage.getItem("estadoProyecto")
     var tar = JSON.parse(localStorage.getItem("tareasProyecto"))
-    var tareasResul=[]
+    var person = JSON.parse(localStorage.getItem("personasProyecto"))
+
+  } catch (error) {
+      
+  }
+    var tareasResul = [];
+    var personasResul = [];
 
     if (tar) {
-      tareasResul=tar
+      tareasResul = tar
+    }
+    if(person){
+      personasResul=person
     }
 
     if (localStorage.getItem("varSesion") !== "") {
@@ -185,6 +259,7 @@ class Proyecto extends Component {
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark  navbar-fixed-top ">
               <a className="nav-link" href="/proyectos"><img src="https://rawgit.com/start-react/ani-theme/master/build/c4584a3be5e75b1595685a1798c50743.png" className="user-avatar1" />  Management Tool</a>
 
+              <a className="nav-link" href="/personas">Personal</a>
 
               <ul className="navbar-nav ml-auto my-lg-0">
 
@@ -202,18 +277,21 @@ class Proyecto extends Component {
 
             {this.state.msg}
           </div>
+
+
+
           {this.state.resul.map(item =>
             <div className="cuadros my-3 mr-3" style={{ display: 'inline-block' }} key={Math.random()}>{item}
             </div>)}
           <div className="form-group bajar">
 
-            <a className="btn btn-primary btn-buscar" href="/proyectoNuevo">Agregar Nuevo Proyecto</a>
+            <button className="btn btn-primary btn-buscar" onClick={this.handleClickGoProyectoNuevo.bind(this)}>Agregar Nuevo Proyecto</button>
           </div>
 
           <Modal show={this.state.show} onHide={this.handleClose}>
             <div >
               <Modal.Header >
-              
+
                 <button type="button" className="close" onClick={this.handleClose} data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -286,14 +364,32 @@ class Proyecto extends Component {
               <div className="row alin-left">
                 <div className="col-lg-12">
                   <ul>
-                    {tareasResul.map(task => <li key={task.nombre}>Nombre: {task.nombre}<br />Descripción: {task.descripcion}<br />Prioridad: {task.prioridad} <br /> Fecha de Creación: {task.fecha_creacion} <br /><br /></li>)}
+                    {tareasResul.map(task => <li key={Math.random()}>Nombre: {task.nombre}<br />Descripción: {task.descripcion}<br />Prioridad: {task.prioridad} <br /> Fecha de Creación: {task.fecha_creacion} <br /><br /></li>)}
+                  </ul>
+                </div>
+              </div>
+             
+             <div className="row alin-left">
+                <div className="col-lg-4">
+                  Personal:
+      </div>
+              </div>
+              <div className="row alin-left">
+                <div className="col-lg-12">
+                  <ul>
+                    {personasResul.map(task => <li key={Math.random()}>Nombre: {task.nombre}<br />Fecha de Nacimiento: {task.fecha_nacimiento}<br />Correo: {task.correo} <br /> Cargo: {task.cargo} <br /><br /></li>)}
                   </ul>
                 </div>
               </div>
               <br />
-              <br />
-              <a className="btn btn-primary btn-agregar" href="/tareas">Agregar Nueva Tarea</a>
-
+         
+              <a className="btn btn-primary btn-agregar" href="/tareaNueva">Agregar Nueva Tarea</a>&nbsp;&nbsp;
+              <a className="btn btn-primary btn-agregar" href="/proyectoNuevo">Modificar Proyecto</a>
+              <div className="row my-5">
+                <div className="col-lg-12 btn-agregarPersProy">
+                  <button className="btn btn-primary btn-agregar" onClick={this.handleClickGoNuevaPersonaProy.bind(this)}>Agregar Personal</button>
+                </div>
+              </div>
             </Modal.Body>
 
           </Modal>
@@ -317,6 +413,6 @@ export default withTracker(() => {
 
   }
   return {
-    proyectosProps: ProyectosCollection.find({}).fetch(),
+    proyectosProps: ProyectosCollection.find({})
   };
 })(Proyecto);

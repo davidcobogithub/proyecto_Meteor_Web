@@ -3,11 +3,16 @@ import { Redirect } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 import { ProyectosCollection } from '../../../api/proyectos.js';
 import { Meteor } from 'meteor/meteor';
+import { Alert } from 'react-bootstrap'
 
 class ProyectoNuevo extends Component {
 
   constructor() {
     super();
+
+    this.handleDismiss = this.handleDismiss.bind(this);
+    this.handleShowAlert = this.handleShowAlert.bind(this);
+
     this.state = {
 
       nombreProyConst: "",
@@ -17,8 +22,27 @@ class ProyectoNuevo extends Component {
       fechaFinProyCons: "",
       estadoProyConst: "",
       tareaProyConst: "",
-      tareasAddProyCons: []
+      tareasAddProyCons: [],
+      showAlert: false,
+      tipoAlerta: "info",
+      mensajeAlerta: ""
     }
+
+  }
+
+
+  handleDismiss() {
+    this.setState({ showAlert: false });
+  }
+
+  handleShowAlert() {
+    this.setState({ showAlert: true });
+
+
+    setTimeout(function () {
+      this.setState({ showAlert: false });
+    }.bind(this), 8000);
+
 
   }
 
@@ -52,7 +76,30 @@ class ProyectoNuevo extends Component {
     return newArray;
   }
 
+  componentWillMount() {
+
+    var nombre = localStorage.getItem("nomProyecto")
+    var descrip = localStorage.getItem("descProyecto")
+    var respon = localStorage.getItem("responProyecto")
+    var fechaIni = localStorage.getItem("fechaIniProyecto")
+    var fechaFin = localStorage.getItem("fechaFinProyecto")
+    var esta = localStorage.getItem("estadoProyecto")
+
+    this.setState({
+
+      nombreProyConst: nombre,
+      descripcionProyConst: descrip,
+      responsableProyCons: respon,
+      fechaIniProyCons: fechaIni,
+      fechaFinProyCons: fechaFin,
+      estadoProyConst: esta
+    });
+  }
+
+
   onGuardar(e) {
+
+    e.preventDefault();
 
     var usuarioId = localStorage.getItem("varSesionUsuarioName")
 
@@ -61,18 +108,22 @@ class ProyectoNuevo extends Component {
       if (this.state.fechaIniProyCons < this.state.fechaFinProyCons) {
 
         var tareasCol = this.getTareas(this);
+      
+        var tare = JSON.parse(localStorage.getItem("tareasProyecto"))
 
         tareasCol.forEach(item => {
 
           if (item.nombre === this.state.tareaProyConst) {
 
-            this.state.tareasAddProyCons.push(item)
+           tare.push(item)
 
           }
 
         });
 
-        var proyectoAgregar = {
+        var pers = JSON.parse(localStorage.getItem("proyectoNuevaTarea"))
+
+        var proyectoModificar = {
 
           nombre: this.state.nombreProyConst,
           descripcion: this.state.descripcionProyConst,
@@ -81,29 +132,99 @@ class ProyectoNuevo extends Component {
           fecha_inicio: this.state.fechaIniProyCons,
           fecha_fin: this.state.fechaFinProyCons,
           estado: this.state.estadoProyConst,
-          tareas: this.state.tareasAddProyCons
+          tareas: tare,
+          personas:pers.personas
         }
 
-        Meteor.call('proyectos.insert', proyectoAgregar);
+        var idProy = localStorage.getItem("idProyecto")
+        var proyec = this.props.proyectoIdentificaProps;
 
-        this.setState({
+        try {
 
-          nombreProyConst: "",
-          descripcionProyConst: "",
-          responsableProyCons: "",
-          fechaIniProyCons: "",
-          fechaFinProyCons: "",
-          estadoProyConst: "SELECCIONE ESTADO",
-          tareaProyConst: "SELECCIONE TAREA"
+          if (proyec[0]._id === idProy) {
 
-        });
+            Meteor.call('proyectos.update', proyec[0]._id, proyectoModificar);
+            this.setState({
+              tipoAlerta: "success",
+              mensajeAlerta: "Se modificó proyecto correctamente"
+            });
+            this.handleShowAlert();
+
+            this.setState({
+
+              nombreProyConst: "",
+              descripcionProyConst: "",
+              responsableProyCons: "",
+              fechaIniProyCons: "",
+              fechaFinProyCons: "",
+              estadoProyConst: "SELECCIONE ESTADO",
+              tareaProyConst: "SELECCIONE TAREA"
+            });
+
+          }
+        } catch (error) {
+
+          var tareaNuevo=[];
+
+          tareasCol.forEach(item => {
+
+            if (item.nombre === this.state.tareaProyConst) {
+  
+              tareaNuevo.push(item)
+  
+            }
+  
+          });
+
+          var proyectoAgregar = {
+
+            nombre: this.state.nombreProyConst,
+            descripcion: this.state.descripcionProyConst,
+            responsable: this.state.responsableProyCons,
+            responsable_correo: usuarioId,
+            fecha_inicio: this.state.fechaIniProyCons,
+            fecha_fin: this.state.fechaFinProyCons,
+            estado: this.state.estadoProyConst,
+            tareas: tareaNuevo,
+  
+          }
+
+          Meteor.call('proyectos.insert', proyectoAgregar);
+          this.setState({
+            tipoAlerta: "success",
+            mensajeAlerta: "Se agregó nuevo proyecto correctamente"
+          });
+          this.handleShowAlert();
+          this.setState({
+
+            nombreProyConst: "",
+            descripcionProyConst: "",
+            responsableProyCons: "",
+            fechaIniProyCons: "",
+            fechaFinProyCons: "",
+            estadoProyConst: "SELECCIONE ESTADO",
+            tareaProyConst: "SELECCIONE TAREA"
+
+          });
+
+        }
 
       }
       else {
-        this.mensaje("La fecha de inicio no puede ser mayor a la fecha de entrega del proyecto")
+
+        this.setState({
+          tipoAlerta: "danger",
+          mensajeAlerta: "La fecha de inicio no puede ser mayor a la fecha de entrega del proyecto"
+        });
+        this.handleShowAlert();
       }
     } else {
-      this.mensaje("Para agregar un nuevo proyecto debe llenar todos los campos del formulario")
+
+      this.setState({
+        tipoAlerta: "warning",
+        mensajeAlerta: "Para agregar un nuevo proyecto debe llenar todos los campos del formulario"
+      });
+      this.handleShowAlert();
     }
   }
 
@@ -112,11 +233,6 @@ class ProyectoNuevo extends Component {
     this.setState({
       [e.target.name]: e.target.value
     });
-  }
-
-  mensaje(msm) {
-
-    alert(msm);
   }
 
   render() {
@@ -128,9 +244,22 @@ class ProyectoNuevo extends Component {
       var tareaRes = this.getTareas(this);
       var tareasOpt = tareaRes.map(task => {
 
-        return <option key={task.nombre}>{task.nombre}</option>;
+        return <option key={Math.random()}>{task.nombre}</option>;
 
       });
+
+      var alerta = null;
+      if (this.state.showAlert) {
+
+        alerta =
+          <Alert className="alertas" bsStyle={this.state.tipoAlerta} onDismiss={this.handleDismiss}>
+            <p>
+              {this.state.mensajeAlerta}
+            </p>
+
+          </Alert>
+
+      }
 
       return (
         <div className="login-page ng-scope ui-view" style={{ backgroundColor: "#F2F2F2" }}>
@@ -139,6 +268,7 @@ class ProyectoNuevo extends Component {
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark  navbar-fixed-top ">
               <a className="nav-link" href="/proyectos"><img src="https://rawgit.com/start-react/ani-theme/master/build/c4584a3be5e75b1595685a1798c50743.png" className="user-avatar1" />  Management Tool</a>
 
+              <a className="nav-link" href="/personas">Personal</a>
 
               <ul className="navbar-nav ml-auto my-lg-0">
 
@@ -148,6 +278,11 @@ class ProyectoNuevo extends Component {
               </ul>
 
             </nav>
+          </div>
+          <div className="row" style={{ float: "right", marginTop: "70px" }}>
+
+            {alerta}
+
           </div>
           <form className="form-nuevoProy" onSubmit={this.onGuardar.bind(this)}>
 
@@ -217,7 +352,10 @@ class ProyectoNuevo extends Component {
 
 export default withTracker(() => {
 
+  var idProy = localStorage.getItem("idProyecto")
+
   return {
     proyectosProps: ProyectosCollection.find({}).fetch(),
+    proyectoIdentificaProps: ProyectosCollection.find({ _id: idProy }).fetch(),
   };
 })(ProyectoNuevo);
