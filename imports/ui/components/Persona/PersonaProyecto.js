@@ -284,7 +284,8 @@ class PersonaProyecto extends Component {
   
 export default withTracker(() => {
 
-
+  Meteor.subscribe('findProyectos');
+  Meteor.subscribe('findPersonas');
 
   return {
     proyectosProps: ProyectosCollection.find({}),

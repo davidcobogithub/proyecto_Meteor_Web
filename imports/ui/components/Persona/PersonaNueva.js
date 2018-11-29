@@ -218,6 +218,9 @@ export default withTracker(() => {
 
   var idPersona = localStorage.getItem("idPersona")
 
+  Meteor.subscribe('findProyectos');
+  Meteor.subscribe('findPersonas');
+
   return {
     proyectosProps: ProyectosCollection.find({}),
     personasProps: PersonasCollection.find({}),

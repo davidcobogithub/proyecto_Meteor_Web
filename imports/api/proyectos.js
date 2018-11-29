@@ -4,6 +4,17 @@ import { Meteor } from 'meteor/meteor';
 export const ProyectosCollection = new Mongo.Collection('proyectos');
 export const PersonasCollection = new Mongo.Collection('personas');
 
+if (Meteor.isServer) {
+    // This code only runs on the server
+    Meteor.publish('findProyectos', function() {
+      return ProyectosCollection.find();
+    });
+
+    Meteor.publish('findPersonas', function() {
+        return PersonasCollection.find();
+      });
+  }
+
 Meteor.methods({
     'proyectos.insert'(task) {
    

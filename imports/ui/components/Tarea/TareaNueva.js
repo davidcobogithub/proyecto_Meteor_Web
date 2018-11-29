@@ -228,6 +228,9 @@ class TareaNueva extends Component {
 
 export default withTracker(() => {
 
+  Meteor.subscribe('findProyectos');
+
+
   return {
     proyectosProps: ProyectosCollection.find({}).fetch(),
   };

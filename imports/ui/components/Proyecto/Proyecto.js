@@ -412,6 +412,9 @@ export default withTracker(() => {
   } catch (error) {
 
   }
+
+  Meteor.subscribe('findProyectos');
+  
   return {
     proyectosProps: ProyectosCollection.find({})
   };

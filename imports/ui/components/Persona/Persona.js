@@ -224,6 +224,10 @@ export default withTracker(() => {
   } catch (error) {
 
   }
+  
+  Meteor.subscribe('findProyectos');
+  Meteor.subscribe('findPersonas');
+
   return {
     proyectosProps: ProyectosCollection.find({}).fetch(),
     personasProps: PersonasCollection.find({})
