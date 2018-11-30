@@ -22,9 +22,7 @@ class Login extends Component {
       passwordConst: "",
       usuarioConstModal: "",
       passwordConstModal: "",
-      usuariosConst: [],
       redir: null,
-      registro: null,
       show: false,
       showAlert: false,
       tipoAlerta:"info",
@@ -109,7 +107,7 @@ class Login extends Component {
     if (res != null) {
       localStorage.setItem("varSesion", res._id)
       this.setState({
-        // redir: <Redirect to='/proyectos' />
+  
         redir: <Redirect to='/proyectos' />
 
       });
@@ -256,8 +254,6 @@ class Login extends Component {
           </Modal.Body>
 
         </Modal>
-
-        {this.state.registro}
         {this.state.redir}
       </div>
     );

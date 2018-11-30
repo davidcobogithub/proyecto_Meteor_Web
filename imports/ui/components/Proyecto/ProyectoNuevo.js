@@ -22,7 +22,6 @@ class ProyectoNuevo extends Component {
       fechaFinProyCons: "",
       estadoProyConst: "",
       tareaProyConst: "",
-      tareasAddProyCons: [],
       showAlert: false,
       tipoAlerta: "info",
       mensajeAlerta: ""
